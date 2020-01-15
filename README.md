@@ -10,7 +10,7 @@ The installed libraries will be also put in separate folders, so it won't influe
 <br>
 <br>
 
-## Compile intrumented libraries
+## Compile instrumented libraries
 
 
 Requirements: git, clang
@@ -73,9 +73,9 @@ Since it gets linked with libc++ and no link or runtime errors occures, i assume
 <br>
 <br>
 
-## Use intrumented libraries
+## Use instrumented libraries
 
-Now it is possible to switch between intrumented & raw libraries just by setting the environment hint variable in  [CMakeLists.txt](https://github.com/reapler/Memory-Sanitzer-Instrumentation/blob/master/CMakeLists.txt#L11) like this:
+Now it is possible to switch between instrumented & raw libraries just by setting the environment hint variable in  [CMakeLists.txt](https://github.com/reapler/Memory-Sanitzer-Instrumentation/blob/master/CMakeLists.txt#L11) like this:
 ```
 # libc++
 set(ENV{LIBCPP_ROOT} "/usr/local/lib/libcxx_msan")
