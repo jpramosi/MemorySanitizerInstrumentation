@@ -1,15 +1,17 @@
-# - Try to find libc++ and libc++abi
-# Once done, this will define
-#
-# LIBCPP_FOUND - system has libc++
-# LIBCPP_ROOT - base directory of libc++
-# LIBCPP_INCLUDE_DIR - the libc++ include directories, not really needed
-# LIBCPP_LIBRARIES - link these to use libc++
+#[[
+    - Try to find libc++ and libc++abi
+    Once done, this will define
+
+    LIBCPP_FOUND - system has libc++
+    LIBCPP_ROOT - base directory of libc++
+    LIBCPP_INCLUDE_DIR - the libc++ include directories, not really needed
+    LIBCPP_LIBRARIES - link these to use libc++
+]]
 
 function(_libcpp_find_header_dir)
     if ("${LIBCPP_INCLUDE_DIR}" STREQUAL "")
         set(LIBCPP_SEARCH_FILE "__libcpp_version")
-        if ("ENV{LIBCPP_ROOT}" STREQUAL "")
+        if ("$ENV{LIBCPP_ROOT}" STREQUAL "")
             file(GLOB_RECURSE LIBCPP_INCLUDE_DIR
                 "/usr/include/*${LIBCPP_SEARCH_FILE}"
                 "/usr/local/include/*${LIBCPP_SEARCH_FILE}"
@@ -31,7 +33,7 @@ function(_libcpp_find_header_dir)
     endif()
 endfunction()
 
-function(_libcpp_find_library_dir)
+function(_libcpp_find_libraries)
 
     if (LIBCPP_USE_STATIC)
         set(LIBCPP_SEARCH_LIBCPP "libc++.a")
@@ -42,7 +44,7 @@ function(_libcpp_find_library_dir)
     endif()
 
     if ("${LIBCPP_LIBRARY}" STREQUAL "" OR "${LIBCPPABI_LIBRARY}" STREQUAL "")
-        if ("ENV{LIBCPP_ROOT}" STREQUAL "")
+        if ("$ENV{LIBCPP_ROOT}" STREQUAL "")
             file(GLOB_RECURSE LIBCPP_LIBRARY
                 "/usr/lib64/*${LIBCPP_SEARCH_LIBCPP}"
                 "/usr/lib/*${LIBCPP_SEARCH_LIBCPP}"
@@ -97,4 +99,4 @@ function(_libcpp_find_library_dir)
 endfunction()
 
 _libcpp_find_header_dir()
-_libcpp_find_library_dir()
+_libcpp_find_libraries()
