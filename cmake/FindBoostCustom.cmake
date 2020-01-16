@@ -116,7 +116,7 @@ function(_boostc_find_libraries)
     get_filename_component(FILE_DIR "${PREF_FILE}" DIRECTORY)
 
     # Create file paths
-    if (LIBCPP_USE_STATIC)
+    if (BOOSTC_USE_STATIC)
         foreach(COMPONENT ${BoostCustom_FIND_COMPONENTS})
             list(APPEND BOOSTC_LIBRARIES "${FILE_DIR}/libboost_${COMPONENT}.a")
         endforeach()
