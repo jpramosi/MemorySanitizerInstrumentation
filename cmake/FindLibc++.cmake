@@ -9,31 +9,27 @@
 ]]
 
 function(_libcpp_find_header_dir)
-    if ("${LIBCPP_INCLUDE_DIR}" STREQUAL "")
-        set(LIBCPP_SEARCH_FILE "__libcpp_version")
-        if ("$ENV{LIBCPP_ROOT}" STREQUAL "")
-            file(GLOB_RECURSE LIBCPP_INCLUDE_DIR
-                "/usr/include/*${LIBCPP_SEARCH_FILE}"
-                "/usr/local/include/*${LIBCPP_SEARCH_FILE}"
-                "/opt/local/include/*${LIBCPP_SEARCH_FILE}"
-                "${CMAKE_SOURCE_DIR}/includes/*${LIBCPP_SEARCH_FILE}"
-                )
-        else()
-            file(GLOB_RECURSE LIBCPP_INCLUDE_DIR
-                "$ENV{LIBCPP_ROOT}/include/*${LIBCPP_SEARCH_FILE}"
-                "$ENV{LIBCPP_ROOT}/local/include/*${LIBCPP_SEARCH_FILE}"
-                "${CMAKE_SOURCE_DIR}/includes/*${LIBCPP_SEARCH_FILE}"
-                )
-        endif()
-        foreach(VFILE ${LIBCPP_INCLUDE_DIR})
-            get_filename_component(FILE_DIR "${VFILE}" DIRECTORY)
-            set(LIBCPP_INCLUDE_DIR "${FILE_DIR}" CACHE INTERNAL "")
-            break()
-        endforeach()
+
+    if (NOT "${LIBCPP_INCLUDE_DIR}" STREQUAL "")
+        return()
     endif()
+
+    find_path(LIBCPP_INCLUDE_DIR
+        NAMES
+            v1/__libcpp_version
+        HINTS
+            $ENV{LIBCPP_ROOT}
+        PATH_SUFFIXES
+            include/c++
+    )
+
 endfunction()
 
 function(_libcpp_find_libraries)
+
+    if (NOT "${LIBCPP_LIBRARY}" STREQUAL "" AND NOT "${LIBCPPABI_LIBRARY}" STREQUAL "")
+        return()
+    endif()
 
     if (LIBCPP_USE_STATIC)
         set(LIBCPP_SEARCH_LIBCPP "libc++.a")
@@ -43,48 +39,25 @@ function(_libcpp_find_libraries)
         set(LIBCPP_SEARCH_LIBCPPABI "libc++abi.so")
     endif()
 
-    if ("${LIBCPP_LIBRARY}" STREQUAL "" OR "${LIBCPPABI_LIBRARY}" STREQUAL "")
-        if ("$ENV{LIBCPP_ROOT}" STREQUAL "")
-            file(GLOB_RECURSE LIBCPP_LIBRARY
-                "/usr/lib64/*${LIBCPP_SEARCH_LIBCPP}"
-                "/usr/lib/*${LIBCPP_SEARCH_LIBCPP}"
-                "/usr/local/lib/*${LIBCPP_SEARCH_LIBCPP}"
-                "/opt/local/lib/*${LIBCPP_SEARCH_LIBCPP}"
-                "${CMAKE_SOURCE_DIR}/includes/*${LIBCPP_SEARCH_LIBCPP}"
-                )
-            file(GLOB_RECURSE LIBCPPABI_LIBRARY
-                "/usr/lib64/*${LIBCPP_SEARCH_LIBCPPABI}"
-                "/usr/lib/*${LIBCPP_SEARCH_LIBCPPABI}"
-                "/usr/local/lib/*${LIBCPP_SEARCH_LIBCPPABI}"
-                "/opt/local/lib/*${LIBCPP_SEARCH_LIBCPPABI}"
-                "${CMAKE_SOURCE_DIR}/includes/*${LIBCPP_SEARCH_LIBCPPABI}"
-                )
-        else()
-            file(GLOB_RECURSE LIBCPP_LIBRARY
-                "$ENV{LIBCPP_ROOT}/lib64/*${LIBCPP_SEARCH_LIBCPP}"
-                "$ENV{LIBCPP_ROOT}/lib/*${LIBCPP_SEARCH_LIBCPP}"
-                "${CMAKE_SOURCE_DIR}/lib/*${LIBCPP_SEARCH_LIBCPP}"
-                )
-            file(GLOB_RECURSE LIBCPPABI_LIBRARY
-                "$ENV{LIBCPP_ROOT}/lib64/*${LIBCPP_SEARCH_LIBCPPABI}"
-                "$ENV{LIBCPP_ROOT}/lib/*${LIBCPP_SEARCH_LIBCPPABI}"
-                "${CMAKE_SOURCE_DIR}/lib/*${LIBCPP_SEARCH_LIBCPPABI}"
-                )
-        endif()
-    endif()
-
-    foreach(VFILE ${LIBCPP_LIBRARY})
-        set(LIBCPP_LIBRARY "${VFILE}" CACHE INTERNAL "")
-        break()
-    endforeach()
-
-    foreach(VFILE ${LIBCPPABI_LIBRARY})
-        set(LIBCPPABI_LIBRARY "${VFILE}" CACHE INTERNAL "")
-        break()
-    endforeach()
+    find_library(LIBCPP_LIBRARY
+        NAMES
+            ${LIBCPP_SEARCH_LIBCPP}
+        HINTS
+            $ENV{LIBCPP_ROOT}
+        PATH_SUFFIXES
+            lib
+    )
+    find_library(LIBCPPABI_LIBRARY
+        NAMES
+            ${LIBCPP_SEARCH_LIBCPPABI}
+        HINTS
+            $ENV{LIBCPP_ROOT}
+        PATH_SUFFIXES
+            lib
+    )
 
     if(LIBCPP_INCLUDE_DIR AND LIBCPP_LIBRARY AND LIBCPPABI_LIBRARY)
-        SET(LIBCPP_FOUND TRUE)
+        SET(LIBCPP_FOUND TRUE CACHE INTERNAL "")
         set(LIBCPP_LIBRARIES ${LIBCPP_LIBRARY} ${LIBCPPABI_LIBRARY} CACHE INTERNAL "")
     endif()
     if(LIBCPP_FOUND)
