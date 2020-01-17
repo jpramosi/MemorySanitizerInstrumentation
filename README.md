@@ -2,7 +2,7 @@
 
   
 
-This guide will introduce you into compiling stl openssl & boost libraries instrumented with MemorySanitizer and how to use it later with a test programm on ubuntu-18.04.<br>
+This guide will introduce you into compiling stl, openssl & boost libraries instrumented with MemorySanitizer and how to use it later with a test programm on ubuntu-18.04.<br>
 To the best of my knowledge memory sanitizer unfortunately doesn't allow blacklist external non-instrumented libraries,<br>
 so it is needed to instrument it even if the source will be suppressed anyway.<br>
 Instead installing headers into a separate include folder in '/usr/local/include' it will be installed together with the library itself.<br>
@@ -97,6 +97,68 @@ find_package(OpenSSL REQUIRED)
 set(ENV{BOOST_ROOT} "/usr/local/lib/boost_1_70_0_msan")
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.70.0 REQUIRED COMPONENTS filesystem system date_time)
+```
+
+To test if everything is working as expected, common functions are used for each library:
+```cpp
+#include <fstream>
+#include <openssl/ssl.h>
+#include <boost/filesystem.hpp>
+
+void stl_test()
+{
+    // If stl library 'libc++' is correctly instrumented,
+    // this should not report to memory sanitizer
+    std::ofstream o;
+    o.open("test");
+    o << "test" << std::endl;
+}
+
+void openssl_test()
+{
+    // If openssl library is correctly instrumented,
+    // this should not report to memory sanitizer
+    SSL_load_error_strings();
+}
+
+void boost_test()
+{
+    // If boost library is correctly instrumented,
+    // this should not report to memory sanitizer
+    if (boost::filesystem::exists("blub.txt"))
+        printf("test\n");
+}
+
+void undefined_read()
+{
+    // If all libraries are instrumented correctly,
+    // this is the only piece of code that is allowed to be reported
+    // to memory sanitizer
+    int a;
+    if (a == 0)
+        printf("test\n");
+}
+
+int main(int argc, char **argv)
+{
+    stl_test();
+    openssl_test();
+    boost_test();
+    undefined_read();
+
+    return 0;
+}
+```
+
+The expected output:
+```
+==12828==WARNING: MemorySanitizer: use-of-uninitialized-value
+    #0 0x50fb54 in undefined_read() /projects/tests/MsanInstrumentation/src/main.cpp:35:9
+    #1 0x50fc2f in main /projects/tests/MsanInstrumentation/src/main.cpp:44:5
+    #2 0x7f3990d41b96 in __libc_start_main /build/glibc-OTsEL5/glibc-2.27/csu/../csu/libc-start.c:310
+    #3 0x495249 in _start (/projects/tests/MsanInstrumentation/build/msan+0x495249)
+
+SUMMARY: MemorySanitizer: use-of-uninitialized-value /projects/tests/MsanInstrumentation/src/main.cpp:35:9 in undefined_read()
 ```
 
 <br>
