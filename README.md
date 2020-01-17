@@ -4,7 +4,7 @@
 
 This guide will introduce you into compiling stl openssl & boost libraries instrumented with MemorySanitizer and how to use it later with a test programm on ubuntu-18.04.<br>
 To the best of my knowledge memory sanitizer unfortunately doesn't allow blacklist external non-instrumented libraries,<br>
-so it is needed to instrument it even if the source will be suppressed anyway.
+so it is needed to instrument it even if the source will be suppressed anyway.<br>
 Instead installing headers into a separate include folder in '/usr/local/include' it will be installed together with the library itself.<br>
 Afterwards it can be found with a standard CMake module with a common 'X_ROOT' hint variable.<br>
 The installed libraries will be also put in separate folders, so it won't influence already installed binaries.
@@ -56,6 +56,7 @@ sudo make install
 ```
 Note since OpenSSL is known for having false-positives a suppression for all source files is used.<br>
 Since the project is anyway tested by its maintainers, it is fine now.
+<br>
 <br>
 
 Compile boost:
