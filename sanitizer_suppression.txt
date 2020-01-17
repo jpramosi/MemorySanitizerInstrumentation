@@ -1,0 +1,11 @@
+# Just ignore all sources, since it is anyway tested by the maintainers.
+# Unfortunately memory sanitizer doesn't allow blacklist
+# external non-instrumented libraries, so it is defined here.
+src:apps/*
+src:crypto/*
+src:engines/*
+src:include/*
+src:krb5/*
+src:ms/*
+src:os-dep/*
+src:ssl/*

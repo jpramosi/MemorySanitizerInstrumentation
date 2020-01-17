@@ -3,6 +3,8 @@
   
 
 This guide will introduce you into compiling stl openssl & boost libraries instrumented with MemorySanitizer and how to use it later with a test programm on ubuntu-18.04.<br>
+To the best of my knowledge memory sanitizer unfortunately doesn't allow blacklist external non-instrumented libraries,<br>
+so it is needed to instrument it even if the source will be suppressed anyway.
 Instead installing headers into a separate include folder in '/usr/local/include' it will be installed together with the library itself.<br>
 Afterwards it can be found with a standard CMake module with a common 'X_ROOT' hint variable.<br>
 The installed libraries will be also put in separate folders, so it won't influence already installed binaries.
@@ -47,10 +49,13 @@ New libraries located in '/usr/local/lib/openssl_1_1_1_msan/lib'
 cd /your/libray/path/
 git clone -b OpenSSL_1_1_1-stable --recursive https://github.com/openssl/openssl
 cd openssl
-CC="clang -fsanitize=memory -O1 " ./config --strict-warnings -no-shared --prefix=/usr/local/lib/openssl_1_1_1_msan --openssldir=/usr/local/lib/openssl_1_1_1_msan
+wget https://raw.githubusercontent.com/reapler/Memory-Sanitzer-Instrumentation/master/sanitizer_suppression.txt
+CC="clang -fsanitize=memory -O1 -fsanitize-blacklist=sanitizer_suppression.txt" ./config --strict-warnings -no-shared --prefix=/usr/local/lib/openssl_1_1_1_msan --openssldir=/usr/local/lib/openssl_1_1_1_msan
 make clean && make -j 4
 sudo make install
 ```
+Note since OpenSSL is known for having false-positives a suppression for all source files is used.<br>
+Since the project is anyway tested by its maintainers, it is fine now.
 <br>
 
 Compile boost:
