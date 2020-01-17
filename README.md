@@ -54,7 +54,7 @@ CC="clang -fsanitize=memory -O1 -fsanitize-blacklist=sanitizer_suppression.txt" 
 make clean && make -j 4
 sudo make install
 ```
-Note since OpenSSL is known for having false-positives a suppression for all source files is used.<br>
+Note: Since OpenSSL is known for having false-positives, a suppression file for all source files is used.<br>
 Since the project is anyway tested by its maintainers, it is fine now.
 <br>
 <br>
@@ -73,7 +73,7 @@ cd boost_1_70_0
 sudo ./b2 -a toolset=clang cxxflags="-std=c++11 -nostdinc++ -I/usr/local/lib/libcxx_msan/include/c++/v1 -fsanitize=memory" linkflags="-fsanitize=memory" --prefix=/usr/local/lib/boost_1_70_0_msan -j4 install
 sudo ldconfig
 ```
-Note: Even it is not set with '-stdlib=libc++' it seems to use its headers (displays libcpp deprecation warnings).
+Note: Even it is not set with '-stdlib=libc++' it seems to use its headers (displays libcpp deprecation warnings).<br>
 Since it gets linked with libc++ and no link or runtime errors occures, i assume this is working.
 
 <br>
@@ -98,5 +98,12 @@ set(ENV{BOOST_ROOT} "/usr/local/lib/boost_1_70_0_msan")
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.70.0 REQUIRED COMPONENTS filesystem system date_time)
 ```
-The provied [cmake-modules](https://github.com/reapler/Memory-Sanitzer-Instrumentation/tree/master/cmake) can be also copied into other projects to find the desired packages.<br>
-See also [cmake-example](https://github.com/reapler/cmake-example) to get an overview of other tools.
+
+<br>
+<br>
+
+## Modules
+
+The modules BinaryWrapper, FindBoostCustom, FindLibc++ & FindOpenSSLCustom are no default cmake modules,<br>the '*Custom' behave similary like the original module and can be used
+in a project if you don't like to mess up the find_package's cache variables from the original one. But in this project here it is not needed.<br>
+See also [Sanitize-Coredump-Coverage](https://github.com/reapler/Sanitize-Coredump-Coverage) to get an overview of the other excellent tools.
