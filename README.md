@@ -1,4 +1,4 @@
-##  Memory Sanitzer Instrumentation STL, OpenSSL & Boost Libraries
+##  Memory Sanitizer Instrumentation STL, OpenSSL & Boost Libraries
 
   
 
@@ -49,7 +49,7 @@ New libraries located in '/usr/local/lib/openssl_1_1_1_msan/lib'
 cd /your/libray/path/
 git clone -b OpenSSL_1_1_1-stable --recursive https://github.com/openssl/openssl
 cd openssl
-wget https://raw.githubusercontent.com/reapler/Memory-Sanitzer-Instrumentation/master/sanitizer_suppression.txt
+wget https://raw.githubusercontent.com/reapler/Memory-Sanitizer-Instrumentation/master/sanitizer_suppression.txt
 CC="clang -fsanitize=memory -O1 -fsanitize-blacklist=sanitizer_suppression.txt" ./config --strict-warnings -no-shared --prefix=/usr/local/lib/openssl_1_1_1_msan --openssldir=/usr/local/lib/openssl_1_1_1_msan
 make clean && make -j 4
 sudo make install
@@ -81,7 +81,7 @@ Since it gets linked with libc++ and no link or runtime errors occures, i assume
 
 ## Use instrumented libraries
 
-Now it is possible to switch between instrumented & raw libraries just by setting the environment hint variable in  [CMakeLists.txt](https://github.com/reapler/Memory-Sanitzer-Instrumentation/blob/master/CMakeLists.txt#L11) like this:
+Now it is possible to switch between instrumented & raw libraries just by setting the environment hint variable in  [CMakeLists.txt](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/CMakeLists.txt#L11) like this:
 ```
 # libc++
 set(ENV{LIBCPP_ROOT} "/usr/local/lib/libcxx_msan")
