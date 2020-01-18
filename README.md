@@ -61,7 +61,7 @@ Since the project is anyway tested by its maintainers, it is fine now.
 
 Compile boost:
 <br>
-New headers located in '/usr/local/lib/boost_1_70_0_msan/include/boost_1_70_0_msan'
+New headers located in '/usr/local/lib/boost_1_70_0_msan/include'
 <br>
 New libraries located in '/usr/local/lib/boost_1_70_0_msan/lib'
 ```
@@ -166,6 +166,6 @@ SUMMARY: MemorySanitizer: use-of-uninitialized-value /projects/tests/MsanInstrum
 
 ## Modules
 
-The modules BinaryWrapper, FindBoostCustom, FindLibc++ & FindOpenSSLCustom are no default cmake modules,<br>the '*Custom' behave similary like the original module and can be used
+The modules [BinaryWrapper](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/BinaryWrapper.cmake), [FindBoostCustom](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/FindBoostCustom.cmake), [FindLibc++](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/FindLibc%2B%2B.cmake) & [FindOpenSSLCustom](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/FindOpenSSLCustom.cmake) are no default cmake modules,<br>the '*Custom' behave similary like the original module and can be used
 in a project if you don't like to mess up the find_package's cache variables from the original one. But in this project here it is not needed.<br>
 See also [Sanitize-Coredump-Coverage](https://github.com/reapler/Sanitize-Coredump-Coverage) to get an overview of the other excellent tools.
