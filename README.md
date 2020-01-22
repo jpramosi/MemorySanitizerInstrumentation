@@ -67,10 +67,10 @@ New libraries located in '/usr/local/lib/boost_1_70_0_msan/lib'
 ```
 cd /your/libray/path/
 wget https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.gz
-tar -xzvf boost_1_70_0.tar.gz
+tar -xzf boost_1_70_0.tar.gz
 cd boost_1_70_0
 ./bootstrap.sh --with-toolset=clang --prefix=/usr/local/lib/boost_1_70_0_msan
-sudo ./b2 -a toolset=clang cxxflags="-std=c++11 -nostdinc++ -I/usr/local/lib/libcxx_msan/include/c++/v1 -fsanitize=memory" linkflags="-fsanitize=memory" --prefix=/usr/local/lib/boost_1_70_0_msan -j4 install
+sudo ./b2 -a toolset=clang cxxflags="-std=c++11 -nostdinc++ -fPIC -I/usr/local/lib/libcxx_msan/include/c++/v1 -fsanitize=memory" linkflags="-fsanitize=memory" --prefix=/usr/local/lib/boost_1_70_0_msan -j4 install
 sudo ldconfig
 ```
 Note: Even it is not set with '-stdlib=libc++' it seems to use its headers (displays libcpp deprecation warnings).<br>
