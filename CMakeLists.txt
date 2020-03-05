@@ -3,7 +3,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(BinaryWrapper)
 set(CMAKE_CXX_STANDARD 11)
-set(REPORT_FOLDER "")# Set to "Report" if you wish to report to a file
+set(REPORT_FOLDER "Reports")# Set to "Report" if you wish to report to a file
 
 
 
@@ -20,9 +20,9 @@ set(OPENSSL_USE_STATIC_LIBS ON)
 find_package(OpenSSL REQUIRED)
 
 # boost
-set(ENV{BOOST_ROOT} "/usr/local/lib/boost_1_70_0_msan")
+set(ENV{BOOST_ROOT} "/usr/local/lib/boost_1_72_0_msan")
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.70.0 REQUIRED COMPONENTS filesystem system date_time)
+find_package(Boost 1.72.0 REQUIRED COMPONENTS filesystem system date_time)
 
 
 
@@ -43,6 +43,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	# MemorySanitizer
 	# https://clang.llvm.org/docs/MemorySanitizer.html
     include_directories(${PROJECT_SOURCE_DIR} 
+                "${LIBCPP_INCLUDE_DIR}"
                 "${PROJECT_SOURCE_DIR}/src"
                 "${OPENSSL_INCLUDE_DIR}"
                 "${Boost_INCLUDE_DIRS}")
