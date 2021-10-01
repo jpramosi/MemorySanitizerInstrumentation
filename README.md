@@ -61,16 +61,16 @@ Since the project is anyway tested by its maintainers, it is fine now.
 
 Compile boost:
 <br>
-New headers located in '/usr/local/lib/boost_1_72_0_msan/include'
+New headers located in '/usr/local/lib/boost_1_77_0_msan/include'
 <br>
-New libraries located in '/usr/local/lib/boost_1_72_0_msan/lib'
+New libraries located in '/usr/local/lib/boost_1_77_0_msan/lib'
 ```
 cd /your/libray/path/
-wget https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.gz
-tar -xzf boost_1_72_0.tar.gz
-cd boost_1_72_0
-./bootstrap.sh --with-toolset=clang --prefix=/usr/local/lib/boost_1_72_0_msan
-sudo ./b2 -a toolset=clang cxxflags="-std=c++11 -nostdinc++ -fPIC -I/usr/local/lib/libcxx_msan/include/c++/v1 -fsanitize=memory" linkflags="-fsanitize=memory" --prefix=/usr/local/lib/boost_1_72_0_msan -j4 install
+wget https://boostorg.jfrog.io/native/main/release/1.77.0/source/boost_1_77_0.tar.gz
+tar -xzf boost_1_77_0.tar.gz
+cd boost_1_77_0
+./bootstrap.sh --with-toolset=clang --prefix=/usr/local/lib/boost_1_77_0_msan
+sudo ./b2 -a toolset=clang cxxflags="-std=c++11 -nostdinc++ -fPIC -I/usr/local/lib/libcxx_msan/include/c++/v1 -fsanitize=memory" linkflags="-fsanitize=memory" --prefix=/usr/local/lib/boost_1_77_0_msan -j4 install
 sudo ldconfig
 ```
 Note: Even it is not set with '-stdlib=libc++' it seems to use its headers (displays libcpp deprecation warnings).<br>
@@ -94,9 +94,9 @@ set(OPENSSL_USE_STATIC_LIBS ON)
 find_package(OpenSSL REQUIRED)
 
 # boost
-set(ENV{BOOST_ROOT} "/usr/local/lib/boost_1_72_0_msan")
+set(ENV{BOOST_ROOT} "/usr/local/lib/boost_1_77_0_msan")
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.72.0 REQUIRED COMPONENTS filesystem system date_time)
+find_package(Boost 1.77.0 REQUIRED COMPONENTS filesystem system date_time)
 ```
 
 To test if everything is working as expected, common functions are used for each library:

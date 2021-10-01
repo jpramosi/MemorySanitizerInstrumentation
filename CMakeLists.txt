@@ -20,9 +20,9 @@ set(OPENSSL_USE_STATIC_LIBS ON)
 find_package(OpenSSL REQUIRED)
 
 # boost
-set(ENV{BOOST_ROOT} "/usr/local/lib/boost_1_72_0_msan")
+set(ENV{BOOST_ROOT} "/usr/local/lib/boost_1_77_0_msan")
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.72.0 REQUIRED COMPONENTS filesystem system date_time)
+find_package(Boost 1.77.0 REQUIRED COMPONENTS filesystem system date_time)
 
 
 
