@@ -1,19 +1,23 @@
-##  Memory Sanitizer Instrumentation STL, OpenSSL & Boost Libraries
+Memory Sanitizer Instrumentation
+=
 
-  
+This project will demonstrate how to compile, configure and instrument STL, OpenSSL and Boost libraries with MemorySanitizer.
 
-This guide will introduce you into compiling stl, openssl & boost libraries instrumented with MemorySanitizer and how to use it later with a test programm on ubuntu-18.04.<br>
-To the best of my knowledge memory sanitizer unfortunately doesn't allow blacklist external non-instrumented libraries,<br>
-so it is needed to instrument it even if the source will be suppressed anyway.<br>
-Instead installing headers into a separate include folder in '/usr/local/include' it will be installed together with the library itself.<br>
-Afterwards it can be found with a standard CMake module with a common 'X_ROOT' hint variable.<br>
-The installed libraries will be also put in separate folders, so it won't influence already installed binaries.
+This setup was tested on Ubuntu 21.04 with Clang and GNU compiler. To the best of my knowledge MemorySanitizer unfortunately doesn't allow blacklist external non-instrumented libraries.
+
+To avoid false positive reports from the mentioned libraries, it is required to instrument these with the binary.<br>
+Even if it will be suppressed anyway.
+
+The headers will be installed along with the library binary itself on the same path instead of the default one (for e.g. /usr/local/include). This makes it easier to use these with Cmake later.
+
+Afterwards the libraries can be found with the standard CMake module with a common 'X_ROOT' hint variable.<br>
+The installed libraries will be also put in separate path, so it won't influence already installed binaries.
 
 <br>
+
+## Compile Libraries
+
 <br>
-
-## Compile instrumented libraries
-
 
 Requirements: git, clang
 ````
@@ -74,14 +78,14 @@ sudo ./b2 -a toolset=clang cxxflags="-std=c++11 -nostdinc++ -fPIC -I/usr/local/l
 sudo ldconfig
 ```
 Note: Even it is not set with '-stdlib=libc++' it seems to use its headers (displays libcpp deprecation warnings).<br>
-Since it gets linked with libc++ and no link or runtime errors occures, i assume this is working.
+Since it gets linked with libc++ and no link or runtime errors occurs, I assume this is working.
 
 <br>
 <br>
 
-## Use instrumented libraries
+## Usage of Instrumented Libraries
 
-Now it is possible to switch between instrumented & raw libraries just by setting the environment hint variable in  [CMakeLists.txt](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/CMakeLists.txt#L11) like this:
+Now it is possible to switch between instrumented and default libraries just by setting the environment hint variable in  [CMakeLists.txt](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/CMakeLists.txt#L11) like this:
 ```
 # libc++
 set(ENV{LIBCPP_ROOT} "/usr/local/lib/libcxx_msan")
@@ -99,7 +103,7 @@ set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.77.0 REQUIRED COMPONENTS filesystem system date_time)
 ```
 
-To test if everything is working as expected, common functions are used for each library:
+To test if everything is working as expected, typical functions for each library will be used:
 ```cpp
 #include <fstream>
 #include <openssl/ssl.h>
@@ -162,10 +166,9 @@ SUMMARY: MemorySanitizer: use-of-uninitialized-value /projects/tests/MsanInstrum
 ```
 
 <br>
-<br>
 
 ## Modules
 
-The modules [BinaryWrapper](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/BinaryWrapper.cmake), [FindBoostCustom](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/FindBoostCustom.cmake), [FindLibc++](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/FindLibc%2B%2B.cmake) & [FindOpenSSLCustom](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/FindOpenSSLCustom.cmake) are no default cmake modules,<br>the '*Custom' behave similary like the original module and can be used
+The modules [BinaryWrapper](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/BinaryWrapper.cmake), [FindBoostCustom](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/FindBoostCustom.cmake), [FindLibc++](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/FindLibc%2B%2B.cmake) and [FindOpenSSLCustom](https://github.com/reapler/Memory-Sanitizer-Instrumentation/blob/master/cmake/FindOpenSSLCustom.cmake) are no default Cmake modules,<br>the '*Custom' behave similary like the original module and can be used
 in a project if you don't like to mess up the find_package's cache variables from the original one. But in this project here it is not needed.<br>
 See also [Sanitize-Coredump-Coverage](https://github.com/reapler/Sanitize-Coredump-Coverage) to get an overview of the other excellent tools.
